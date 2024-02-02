@@ -1,3 +1,3 @@
--keep class org.lineageos.device.DeviceExtras.* {
+-keep class com.awaken.device.DeviceExtras.* {
   *;
 }
