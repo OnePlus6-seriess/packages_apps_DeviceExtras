@@ -118,6 +118,7 @@ public class KeyHandler implements DeviceKeyHandler {
                 new IntentFilter(Constants.ACTION_UPDATE_SLIDER_SETTINGS));
 
         mVibrator = mContext.getSystemService(Vibrator.class);
+    }
 
     private boolean hasSetupCompleted() {
         return Settings.Secure.getInt(mContext.getContentResolver(),
