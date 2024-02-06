@@ -17,7 +17,13 @@
 */
 package com.awaken.device.DeviceExtras;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.os.UserHandle;
 import android.util.Log;
 
@@ -30,10 +36,13 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 
+import com.awaken.device.DeviceExtras.DeviceExtras;
+import com.awaken.device.DeviceExtras.services.AutoHBMService;
+
 public class FileUtils {
-    private static final String TAG = "FileUtils";
 
     private static boolean mServiceEnabled = false;
+    private static final String TAG = FileUtils.class.getSimpleName();
 
     private static void startService(Context context) {
         context.startServiceAsUser(new Intent(context, AutoHBMService.class),

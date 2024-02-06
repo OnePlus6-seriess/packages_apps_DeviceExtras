@@ -17,12 +17,14 @@
 package com.awaken.device.DeviceExtras;
 
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.RemoteException;
 import android.os.UserHandle;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
@@ -33,17 +35,11 @@ import com.android.internal.os.DeviceKeyHandler;
 
 import java.util.Arrays;
 
-import com.awaken.device.DeviceExtras.Constants;
-import com.awaken.device.DeviceExtras.SliderControllerBase;
-import com.awaken.device.DeviceExtras.slider.NotificationController;
-import com.awaken.device.DeviceExtras.slider.FlashlightController;
-import com.awaken.device.DeviceExtras.slider.BrightnessController;
-import com.awaken.device.DeviceExtras.slider.RotationController;
-import com.awaken.device.DeviceExtras.slider.RingerController;
-import com.awaken.device.DeviceExtras.slider.NotificationRingerController;
+import com.awaken.device.DeviceExtras.FileUtils;
 
 public class KeyHandler implements DeviceKeyHandler {
     private static final String TAG = KeyHandler.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     private final Context mContext;
     private final NotificationController mNotificationController;
@@ -55,16 +51,11 @@ public class KeyHandler implements DeviceKeyHandler {
 
     private SliderControllerBase mSliderController;
 
-    // Vibration effects
-    private Vibrator mVibrator;
-    private static final VibrationEffect MODE_VIBRATION_EFFECT =
-            VibrationEffect.get(VibrationEffect.EFFECT_DOUBLE_CLICK);
-
-    private final BroadcastReceiver mSliderUpdateReceiver = new BroadcastReceiver();
-    static {
+    private final BroadcastReceiver mSliderUpdateReceiver = new BroadcastReceiver() {
+        @Override
         public void onReceive(Context context, Intent intent) {
-            int usage = intent.getIntExtra(Constants.EXTRA_SLIDER_USAGE, 0);
-            int[] actions = intent.getIntArrayExtra(Constants.EXTRA_SLIDER_ACTIONS);
+            int usage = intent.getIntExtra(SliderConstants.EXTRA_SLIDER_USAGE, 0);
+            int[] actions = intent.getIntArrayExtra(SliderConstants.EXTRA_SLIDER_ACTIONS);
 
             Log.d(TAG, "update usage " + usage + " with actions " +
                     Arrays.toString(actions));
@@ -115,9 +106,7 @@ public class KeyHandler implements DeviceKeyHandler {
         mNotificationRingerController = new NotificationRingerController(mContext);
 
         mContext.registerReceiver(mSliderUpdateReceiver,
-                new IntentFilter(Constants.ACTION_UPDATE_SLIDER_SETTINGS));
-
-        mVibrator = mContext.getSystemService(Vibrator.class);
+                new IntentFilter(SliderConstants.ACTION_UPDATE_SLIDER_SETTINGS));
     }
 
     private boolean hasSetupCompleted() {
@@ -143,14 +132,7 @@ public class KeyHandler implements DeviceKeyHandler {
         }
 
         mSliderController.processEvent(mContext, scanCode);
-        doHapticFeedback(MODE_VIBRATION_EFFECT);
+
         return null;
     }
-
-    private void doHapticFeedback(VibrationEffect effect) {
-        if (mVibrator != null && mVibrator.hasVibrator()) {
-            mVibrator.vibrate(effect);
-        }
-    }
-
 }
