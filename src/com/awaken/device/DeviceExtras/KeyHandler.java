@@ -60,8 +60,8 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final VibrationEffect MODE_VIBRATION_EFFECT =
             VibrationEffect.get(VibrationEffect.EFFECT_DOUBLE_CLICK);
 
-    private final BroadcastReceiver mSliderUpdateReceiver = new BroadcastReceiver() {
-        @Override
+    private final BroadcastReceiver mSliderUpdateReceiver = new BroadcastReceiver();
+    static {
         public void onReceive(Context context, Intent intent) {
             int usage = intent.getIntExtra(Constants.EXTRA_SLIDER_USAGE, 0);
             int[] actions = intent.getIntArrayExtra(Constants.EXTRA_SLIDER_ACTIONS);
